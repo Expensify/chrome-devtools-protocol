@@ -76,7 +76,18 @@ final class RequestPausedEvent implements \JsonSerializable
 	 */
 	public $networkId;
 
+	/**
+	 * If the request is due to a redirect response from the server, the id of the request that has caused the redirect.
+	 *
+	 * @var string
+	 */
+	public $redirectedRequestId;
 
+
+	/**
+	 * @param object $data
+	 * @return static
+	 */
 	public static function fromJson($data)
 	{
 		$instance = new static();
@@ -109,6 +120,9 @@ final class RequestPausedEvent implements \JsonSerializable
 		}
 		if (isset($data->networkId)) {
 			$instance->networkId = (string)$data->networkId;
+		}
+		if (isset($data->redirectedRequestId)) {
+			$instance->redirectedRequestId = (string)$data->redirectedRequestId;
 		}
 		return $instance;
 	}
@@ -146,6 +160,9 @@ final class RequestPausedEvent implements \JsonSerializable
 		}
 		if ($this->networkId !== null) {
 			$data->networkId = $this->networkId;
+		}
+		if ($this->redirectedRequestId !== null) {
+			$data->redirectedRequestId = $this->redirectedRequestId;
 		}
 		return $data;
 	}

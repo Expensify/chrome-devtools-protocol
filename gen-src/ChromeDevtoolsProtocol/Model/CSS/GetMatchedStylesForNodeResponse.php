@@ -47,13 +47,31 @@ final class GetMatchedStylesForNodeResponse implements \JsonSerializable
 	public $inherited;
 
 	/**
+	 * A chain of inherited pseudo element styles (from the immediate node parent up to the DOM tree root).
+	 *
+	 * @var InheritedPseudoElementMatches[]|null
+	 */
+	public $inheritedPseudoElements;
+
+	/**
 	 * A list of CSS keyframed animations matching this node.
 	 *
 	 * @var CSSKeyframesRule[]|null
 	 */
 	public $cssKeyframesRules;
 
+	/**
+	 * Id of the first parent element that does not have display: contents.
+	 *
+	 * @var int
+	 */
+	public $parentLayoutNodeId;
 
+
+	/**
+	 * @param object $data
+	 * @return static
+	 */
 	public static function fromJson($data)
 	{
 		$instance = new static();
@@ -81,11 +99,20 @@ final class GetMatchedStylesForNodeResponse implements \JsonSerializable
 				$instance->inherited[] = InheritedStyleEntry::fromJson($item);
 			}
 		}
+		if (isset($data->inheritedPseudoElements)) {
+			$instance->inheritedPseudoElements = [];
+			foreach ($data->inheritedPseudoElements as $item) {
+				$instance->inheritedPseudoElements[] = InheritedPseudoElementMatches::fromJson($item);
+			}
+		}
 		if (isset($data->cssKeyframesRules)) {
 			$instance->cssKeyframesRules = [];
 			foreach ($data->cssKeyframesRules as $item) {
 				$instance->cssKeyframesRules[] = CSSKeyframesRule::fromJson($item);
 			}
+		}
+		if (isset($data->parentLayoutNodeId)) {
+			$instance->parentLayoutNodeId = (int)$data->parentLayoutNodeId;
 		}
 		return $instance;
 	}
@@ -118,11 +145,20 @@ final class GetMatchedStylesForNodeResponse implements \JsonSerializable
 				$data->inherited[] = $item->jsonSerialize();
 			}
 		}
+		if ($this->inheritedPseudoElements !== null) {
+			$data->inheritedPseudoElements = [];
+			foreach ($this->inheritedPseudoElements as $item) {
+				$data->inheritedPseudoElements[] = $item->jsonSerialize();
+			}
+		}
 		if ($this->cssKeyframesRules !== null) {
 			$data->cssKeyframesRules = [];
 			foreach ($this->cssKeyframesRules as $item) {
 				$data->cssKeyframesRules[] = $item->jsonSerialize();
 			}
+		}
+		if ($this->parentLayoutNodeId !== null) {
+			$data->parentLayoutNodeId = $this->parentLayoutNodeId;
 		}
 		return $data;
 	}

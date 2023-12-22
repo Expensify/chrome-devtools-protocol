@@ -21,7 +21,18 @@ final class AutoAttachRelatedRequest implements \JsonSerializable
 	 */
 	public $waitForDebuggerOnStart;
 
+	/**
+	 * Only targets matching filter will be attached.
+	 *
+	 * @var FilterEntry[]
+	 */
+	public $filter;
 
+
+	/**
+	 * @param object $data
+	 * @return static
+	 */
 	public static function fromJson($data)
 	{
 		$instance = new static();
@@ -30,6 +41,12 @@ final class AutoAttachRelatedRequest implements \JsonSerializable
 		}
 		if (isset($data->waitForDebuggerOnStart)) {
 			$instance->waitForDebuggerOnStart = (bool)$data->waitForDebuggerOnStart;
+		}
+		if (isset($data->filter)) {
+			$instance->filter = [];
+			foreach ($data->filter as $item) {
+				$instance->filter[] = FilterEntry::fromJson($item);
+			}
 		}
 		return $instance;
 	}
@@ -43,6 +60,12 @@ final class AutoAttachRelatedRequest implements \JsonSerializable
 		}
 		if ($this->waitForDebuggerOnStart !== null) {
 			$data->waitForDebuggerOnStart = $this->waitForDebuggerOnStart;
+		}
+		if ($this->filter !== null) {
+			$data->filter = [];
+			foreach ($this->filter as $item) {
+				$data->filter[] = $item->jsonSerialize();
+			}
 		}
 		return $data;
 	}

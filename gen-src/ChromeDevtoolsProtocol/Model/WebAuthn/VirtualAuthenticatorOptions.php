@@ -53,6 +53,20 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 	public $hasCredBlob;
 
 	/**
+	 * If set to true, the authenticator will support the minPinLength extension. https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension Defaults to false.
+	 *
+	 * @var bool|null
+	 */
+	public $hasMinPinLength;
+
+	/**
+	 * If set to true, the authenticator will support the prf extension. https://w3c.github.io/webauthn/#prf-extension Defaults to false.
+	 *
+	 * @var bool|null
+	 */
+	public $hasPrf;
+
+	/**
 	 * If set to true, tests of user presence will succeed immediately. Otherwise, they will not be resolved. Defaults to true.
 	 *
 	 * @var bool|null
@@ -67,6 +81,10 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 	public $isUserVerified;
 
 
+	/**
+	 * @param object $data
+	 * @return static
+	 */
 	public static function fromJson($data)
 	{
 		$instance = new static();
@@ -90,6 +108,12 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 		}
 		if (isset($data->hasCredBlob)) {
 			$instance->hasCredBlob = (bool)$data->hasCredBlob;
+		}
+		if (isset($data->hasMinPinLength)) {
+			$instance->hasMinPinLength = (bool)$data->hasMinPinLength;
+		}
+		if (isset($data->hasPrf)) {
+			$instance->hasPrf = (bool)$data->hasPrf;
 		}
 		if (isset($data->automaticPresenceSimulation)) {
 			$instance->automaticPresenceSimulation = (bool)$data->automaticPresenceSimulation;
@@ -124,6 +148,12 @@ final class VirtualAuthenticatorOptions implements \JsonSerializable
 		}
 		if ($this->hasCredBlob !== null) {
 			$data->hasCredBlob = $this->hasCredBlob;
+		}
+		if ($this->hasMinPinLength !== null) {
+			$data->hasMinPinLength = $this->hasMinPinLength;
+		}
+		if ($this->hasPrf !== null) {
+			$data->hasPrf = $this->hasPrf;
 		}
 		if ($this->automaticPresenceSimulation !== null) {
 			$data->automaticPresenceSimulation = $this->automaticPresenceSimulation;

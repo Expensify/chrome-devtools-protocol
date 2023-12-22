@@ -46,7 +46,18 @@ final class RequestWillBeSentExtraInfoEvent implements \JsonSerializable
 	 */
 	public $clientSecurityState;
 
+	/**
+	 * Whether the site has partitioned cookies stored in a partition different than the current one.
+	 *
+	 * @var bool|null
+	 */
+	public $siteHasCookieInOtherPartition;
 
+
+	/**
+	 * @param object $data
+	 * @return static
+	 */
 	public static function fromJson($data)
 	{
 		$instance = new static();
@@ -67,6 +78,9 @@ final class RequestWillBeSentExtraInfoEvent implements \JsonSerializable
 		}
 		if (isset($data->clientSecurityState)) {
 			$instance->clientSecurityState = ClientSecurityState::fromJson($data->clientSecurityState);
+		}
+		if (isset($data->siteHasCookieInOtherPartition)) {
+			$instance->siteHasCookieInOtherPartition = (bool)$data->siteHasCookieInOtherPartition;
 		}
 		return $instance;
 	}
@@ -92,6 +106,9 @@ final class RequestWillBeSentExtraInfoEvent implements \JsonSerializable
 		}
 		if ($this->clientSecurityState !== null) {
 			$data->clientSecurityState = $this->clientSecurityState->jsonSerialize();
+		}
+		if ($this->siteHasCookieInOtherPartition !== null) {
+			$data->siteHasCookieInOtherPartition = $this->siteHasCookieInOtherPartition;
 		}
 		return $data;
 	}

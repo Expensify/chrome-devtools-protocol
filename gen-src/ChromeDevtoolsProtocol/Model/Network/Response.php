@@ -159,6 +159,13 @@ final class Response implements \JsonSerializable
 	public $protocol;
 
 	/**
+	 * The reason why Chrome uses a specific transport protocol for HTTP semantics.
+	 *
+	 * @var string
+	 */
+	public $alternateProtocolUsage;
+
+	/**
 	 * Security state of the request resource.
 	 *
 	 * @var string
@@ -173,6 +180,10 @@ final class Response implements \JsonSerializable
 	public $securityDetails;
 
 
+	/**
+	 * @param object $data
+	 * @return static
+	 */
 	public static function fromJson($data)
 	{
 		$instance = new static();
@@ -238,6 +249,9 @@ final class Response implements \JsonSerializable
 		}
 		if (isset($data->protocol)) {
 			$instance->protocol = (string)$data->protocol;
+		}
+		if (isset($data->alternateProtocolUsage)) {
+			$instance->alternateProtocolUsage = (string)$data->alternateProtocolUsage;
 		}
 		if (isset($data->securityState)) {
 			$instance->securityState = (string)$data->securityState;
@@ -314,6 +328,9 @@ final class Response implements \JsonSerializable
 		}
 		if ($this->protocol !== null) {
 			$data->protocol = $this->protocol;
+		}
+		if ($this->alternateProtocolUsage !== null) {
+			$data->alternateProtocolUsage = $this->alternateProtocolUsage;
 		}
 		if ($this->securityState !== null) {
 			$data->securityState = $this->securityState;

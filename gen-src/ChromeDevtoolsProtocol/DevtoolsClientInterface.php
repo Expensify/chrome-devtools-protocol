@@ -17,8 +17,11 @@ use ChromeDevtoolsProtocol\Domain\DOMSnapshotDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DOMStorageDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DatabaseDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DebuggerDomainInterface;
+use ChromeDevtoolsProtocol\Domain\DeviceAccessDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DeviceOrientationDomainInterface;
 use ChromeDevtoolsProtocol\Domain\EmulationDomainInterface;
+use ChromeDevtoolsProtocol\Domain\EventBreakpointsDomainInterface;
+use ChromeDevtoolsProtocol\Domain\FedCmDomainInterface;
 use ChromeDevtoolsProtocol\Domain\FetchDomainInterface;
 use ChromeDevtoolsProtocol\Domain\HeadlessExperimentalDomainInterface;
 use ChromeDevtoolsProtocol\Domain\HeapProfilerDomainInterface;
@@ -35,6 +38,7 @@ use ChromeDevtoolsProtocol\Domain\OverlayDomainInterface;
 use ChromeDevtoolsProtocol\Domain\PageDomainInterface;
 use ChromeDevtoolsProtocol\Domain\PerformanceDomainInterface;
 use ChromeDevtoolsProtocol\Domain\PerformanceTimelineDomainInterface;
+use ChromeDevtoolsProtocol\Domain\PreloadDomainInterface;
 use ChromeDevtoolsProtocol\Domain\ProfilerDomainInterface;
 use ChromeDevtoolsProtocol\Domain\RuntimeDomainInterface;
 use ChromeDevtoolsProtocol\Domain\SchemaDomainInterface;
@@ -140,6 +144,14 @@ interface DevtoolsClientInterface extends CloseableResourceInterface
 
 
 	/**
+	 * DeviceAccess domain.
+	 *
+	 * @experimental
+	 */
+	public function deviceAccess(): DeviceAccessDomainInterface;
+
+
+	/**
 	 * DeviceOrientation domain.
 	 *
 	 * @experimental
@@ -179,6 +191,22 @@ interface DevtoolsClientInterface extends CloseableResourceInterface
 	 * This domain emulates different environments for the page.
 	 */
 	public function emulation(): EmulationDomainInterface;
+
+
+	/**
+	 * EventBreakpoints permits setting breakpoints on particular operations and events in targets that run JavaScript but do not have a DOM. JavaScript execution will stop on these operations as if there was a regular breakpoint set.
+	 *
+	 * @experimental
+	 */
+	public function eventBreakpoints(): EventBreakpointsDomainInterface;
+
+
+	/**
+	 * This domain allows interacting with the FedCM dialog.
+	 *
+	 * @experimental
+	 */
+	public function fedCm(): FedCmDomainInterface;
 
 
 	/**
@@ -293,6 +321,14 @@ interface DevtoolsClientInterface extends CloseableResourceInterface
 	 * @experimental
 	 */
 	public function performanceTimeline(): PerformanceTimelineDomainInterface;
+
+
+	/**
+	 * Preload domain.
+	 *
+	 * @experimental
+	 */
+	public function preload(): PreloadDomainInterface;
 
 
 	/**

@@ -12,10 +12,13 @@ namespace ChromeDevtoolsProtocol\Model\Audits;
 final class AttributionReportingIssueTypeEnum
 {
 	public const PERMISSION_POLICY_DISABLED = 'PermissionPolicyDisabled';
-	public const INVALID_ATTRIBUTION_SOURCE_EVENT_ID = 'InvalidAttributionSourceEventId';
-	public const INVALID_ATTRIBUTION_DATA = 'InvalidAttributionData';
-	public const ATTRIBUTION_SOURCE_UNTRUSTWORTHY_ORIGIN = 'AttributionSourceUntrustworthyOrigin';
-	public const ATTRIBUTION_UNTRUSTWORTHY_ORIGIN = 'AttributionUntrustworthyOrigin';
-	public const ATTRIBUTION_TRIGGER_DATA_TOO_LARGE = 'AttributionTriggerDataTooLarge';
-	public const ATTRIBUTION_EVENT_SOURCE_TRIGGER_DATA_TOO_LARGE = 'AttributionEventSourceTriggerDataTooLarge';
+	public const UNTRUSTWORTHY_REPORTING_ORIGIN = 'UntrustworthyReportingOrigin';
+	public const INSECURE_CONTEXT = 'InsecureContext';
+	public const INVALID_HEADER = 'InvalidHeader';
+	public const INVALID_REGISTER_TRIGGER_HEADER = 'InvalidRegisterTriggerHeader';
+	public const INVALID_ELIGIBLE_HEADER = 'InvalidEligibleHeader';
+	public const TOO_MANY_CONCURRENT_REQUESTS = 'TooManyConcurrentRequests';
+	public const SOURCE_AND_TRIGGER_HEADERS = 'SourceAndTriggerHeaders';
+	public const SOURCE_IGNORED = 'SourceIgnored';
+	public const TRIGGER_IGNORED = 'TriggerIgnored';
 }

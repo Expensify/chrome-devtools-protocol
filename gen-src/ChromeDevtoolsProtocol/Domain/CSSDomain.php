@@ -18,6 +18,8 @@ use ChromeDevtoolsProtocol\Model\CSS\GetComputedStyleForNodeRequest;
 use ChromeDevtoolsProtocol\Model\CSS\GetComputedStyleForNodeResponse;
 use ChromeDevtoolsProtocol\Model\CSS\GetInlineStylesForNodeRequest;
 use ChromeDevtoolsProtocol\Model\CSS\GetInlineStylesForNodeResponse;
+use ChromeDevtoolsProtocol\Model\CSS\GetLayersForNodeRequest;
+use ChromeDevtoolsProtocol\Model\CSS\GetLayersForNodeResponse;
 use ChromeDevtoolsProtocol\Model\CSS\GetMatchedStylesForNodeRequest;
 use ChromeDevtoolsProtocol\Model\CSS\GetMatchedStylesForNodeResponse;
 use ChromeDevtoolsProtocol\Model\CSS\GetMediaQueriesResponse;
@@ -36,10 +38,14 @@ use ChromeDevtoolsProtocol\Model\CSS\SetMediaTextRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetMediaTextResponse;
 use ChromeDevtoolsProtocol\Model\CSS\SetRuleSelectorRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetRuleSelectorResponse;
+use ChromeDevtoolsProtocol\Model\CSS\SetScopeTextRequest;
+use ChromeDevtoolsProtocol\Model\CSS\SetScopeTextResponse;
 use ChromeDevtoolsProtocol\Model\CSS\SetStyleSheetTextRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetStyleSheetTextResponse;
 use ChromeDevtoolsProtocol\Model\CSS\SetStyleTextsRequest;
 use ChromeDevtoolsProtocol\Model\CSS\SetStyleTextsResponse;
+use ChromeDevtoolsProtocol\Model\CSS\SetSupportsTextRequest;
+use ChromeDevtoolsProtocol\Model\CSS\SetSupportsTextResponse;
 use ChromeDevtoolsProtocol\Model\CSS\StopRuleUsageTrackingResponse;
 use ChromeDevtoolsProtocol\Model\CSS\StyleSheetAddedEvent;
 use ChromeDevtoolsProtocol\Model\CSS\StyleSheetChangedEvent;
@@ -129,6 +135,13 @@ class CSSDomain implements CSSDomainInterface
 	}
 
 
+	public function getLayersForNode(ContextInterface $ctx, GetLayersForNodeRequest $request): GetLayersForNodeResponse
+	{
+		$response = $this->internalClient->executeCommand($ctx, 'CSS.getLayersForNode', $request);
+		return GetLayersForNodeResponse::fromJson($response);
+	}
+
+
 	public function getMatchedStylesForNode(
 		ContextInterface $ctx,
 		GetMatchedStylesForNodeRequest $request
@@ -206,6 +219,13 @@ class CSSDomain implements CSSDomainInterface
 	}
 
 
+	public function setScopeText(ContextInterface $ctx, SetScopeTextRequest $request): SetScopeTextResponse
+	{
+		$response = $this->internalClient->executeCommand($ctx, 'CSS.setScopeText', $request);
+		return SetScopeTextResponse::fromJson($response);
+	}
+
+
 	public function setStyleSheetText(ContextInterface $ctx, SetStyleSheetTextRequest $request): SetStyleSheetTextResponse
 	{
 		$response = $this->internalClient->executeCommand($ctx, 'CSS.setStyleSheetText', $request);
@@ -217,6 +237,13 @@ class CSSDomain implements CSSDomainInterface
 	{
 		$response = $this->internalClient->executeCommand($ctx, 'CSS.setStyleTexts', $request);
 		return SetStyleTextsResponse::fromJson($response);
+	}
+
+
+	public function setSupportsText(ContextInterface $ctx, SetSupportsTextRequest $request): SetSupportsTextResponse
+	{
+		$response = $this->internalClient->executeCommand($ctx, 'CSS.setSupportsText', $request);
+		return SetSupportsTextResponse::fromJson($response);
 	}
 
 

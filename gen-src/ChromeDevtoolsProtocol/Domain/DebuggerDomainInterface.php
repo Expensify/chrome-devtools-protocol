@@ -5,6 +5,8 @@ namespace ChromeDevtoolsProtocol\Domain;
 use ChromeDevtoolsProtocol\ContextInterface;
 use ChromeDevtoolsProtocol\Model\Debugger\BreakpointResolvedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\ContinueToLocationRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\DisassembleWasmModuleRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\DisassembleWasmModuleResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\EnableRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\EnableResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\EvaluateOnCallFrameRequest;
@@ -17,6 +19,8 @@ use ChromeDevtoolsProtocol\Model\Debugger\GetStackTraceRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\GetStackTraceResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\GetWasmBytecodeRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\GetWasmBytecodeResponse;
+use ChromeDevtoolsProtocol\Model\Debugger\NextWasmDisassemblyChunkRequest;
+use ChromeDevtoolsProtocol\Model\Debugger\NextWasmDisassemblyChunkResponse;
 use ChromeDevtoolsProtocol\Model\Debugger\PauseOnAsyncCallRequest;
 use ChromeDevtoolsProtocol\Model\Debugger\PausedEvent;
 use ChromeDevtoolsProtocol\Model\Debugger\RemoveBreakpointRequest;
@@ -78,6 +82,20 @@ interface DebuggerDomainInterface
 	 * @return void
 	 */
 	public function disable(ContextInterface $ctx): void;
+
+
+	/**
+	 * Call Debugger.disassembleWasmModule command.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param DisassembleWasmModuleRequest $request
+	 *
+	 * @return DisassembleWasmModuleResponse
+	 */
+	public function disassembleWasmModule(
+		ContextInterface $ctx,
+		DisassembleWasmModuleRequest $request
+	): DisassembleWasmModuleResponse;
 
 
 	/**
@@ -153,6 +171,20 @@ interface DebuggerDomainInterface
 
 
 	/**
+	 * Disassemble the next chunk of lines for the module corresponding to the stream. If disassembly is complete, this API will invalidate the streamId and return an empty chunk. Any subsequent calls for the now invalid stream will return errors.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param NextWasmDisassemblyChunkRequest $request
+	 *
+	 * @return NextWasmDisassemblyChunkResponse
+	 */
+	public function nextWasmDisassemblyChunk(
+		ContextInterface $ctx,
+		NextWasmDisassemblyChunkRequest $request
+	): NextWasmDisassemblyChunkResponse;
+
+
+	/**
 	 * Stops on the next JavaScript statement.
 	 *
 	 * @param ContextInterface $ctx
@@ -185,7 +217,7 @@ interface DebuggerDomainInterface
 
 
 	/**
-	 * Restarts particular call frame from the beginning.
+	 * Restarts particular call frame from the beginning. The old, deprecated behavior of `restartFrame` is to stay paused and allow further CDP commands after a restart was scheduled. This can cause problems with restarting, so we now continue execution immediatly after it has been scheduled until we reach the beginning of the restarted frame. To stay back-wards compatible, `restartFrame` now expects a `mode` parameter to be present. If the `mode` parameter is missing, `restartFrame` errors out. The various return values are deprecated and `callFrames` is always empty. Use the call frames from the `Debugger#paused` events instead, that fires once V8 pauses at the beginning of the restarted function.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param RestartFrameRequest $request
@@ -315,7 +347,7 @@ interface DebuggerDomainInterface
 
 
 	/**
-	 * Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions or no exceptions. Initial pause on exceptions state is `none`.
+	 * Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions, or caught exceptions, no exceptions. Initial pause on exceptions state is `none`.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param SetPauseOnExceptionsRequest $request
@@ -337,7 +369,7 @@ interface DebuggerDomainInterface
 
 
 	/**
-	 * Edits JavaScript source live.
+	 * Edits JavaScript source live. In general, functions that are currently on the stack can not be edited with a single exception: If the edited function is the top-most stack frame and that is the only activation of that function on the stack. In this case the live edit will be successful and a `Debugger.restartFrame` for the top-most function is automatically triggered.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param SetScriptSourceRequest $request

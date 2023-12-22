@@ -18,6 +18,7 @@ use ChromeDevtoolsProtocol\Model\DOM\DescribeNodeResponse;
 use ChromeDevtoolsProtocol\Model\DOM\DiscardSearchResultsRequest;
 use ChromeDevtoolsProtocol\Model\DOM\DistributedNodesUpdatedEvent;
 use ChromeDevtoolsProtocol\Model\DOM\DocumentUpdatedEvent;
+use ChromeDevtoolsProtocol\Model\DOM\EnableRequest;
 use ChromeDevtoolsProtocol\Model\DOM\FocusRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetAttributesRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetAttributesResponse;
@@ -49,6 +50,7 @@ use ChromeDevtoolsProtocol\Model\DOM\GetRelayoutBoundaryRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetRelayoutBoundaryResponse;
 use ChromeDevtoolsProtocol\Model\DOM\GetSearchResultsRequest;
 use ChromeDevtoolsProtocol\Model\DOM\GetSearchResultsResponse;
+use ChromeDevtoolsProtocol\Model\DOM\GetTopLayerElementsResponse;
 use ChromeDevtoolsProtocol\Model\DOM\InlineStyleInvalidatedEvent;
 use ChromeDevtoolsProtocol\Model\DOM\MoveToRequest;
 use ChromeDevtoolsProtocol\Model\DOM\MoveToResponse;
@@ -84,6 +86,7 @@ use ChromeDevtoolsProtocol\Model\DOM\SetNodeValueRequest;
 use ChromeDevtoolsProtocol\Model\DOM\SetOuterHTMLRequest;
 use ChromeDevtoolsProtocol\Model\DOM\ShadowRootPoppedEvent;
 use ChromeDevtoolsProtocol\Model\DOM\ShadowRootPushedEvent;
+use ChromeDevtoolsProtocol\Model\DOM\TopLayerElementsUpdatedEvent;
 use ChromeDevtoolsProtocol\SubscriptionInterface;
 
 /**
@@ -156,10 +159,11 @@ interface DOMDomainInterface
 	 * Enables DOM agent for the given page.
 	 *
 	 * @param ContextInterface $ctx
+	 * @param EnableRequest $request
 	 *
 	 * @return void
 	 */
-	public function enable(ContextInterface $ctx): void;
+	public function enable(ContextInterface $ctx, EnableRequest $request): void;
 
 
 	/**
@@ -196,7 +200,7 @@ interface DOMDomainInterface
 
 
 	/**
-	 * Returns the container of the given node based on container query conditions. If containerName is given, it will find the nearest container with a matching name; otherwise it will find the nearest container regardless of its container name.
+	 * Returns the query container of the given node based on container query conditions: containerName, physical, and logical axes. If no axes are provided, the style container is returned, which is the direct parent or the closest element with a matching container-name.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param GetContainerForNodeRequest $request
@@ -221,7 +225,7 @@ interface DOMDomainInterface
 
 
 	/**
-	 * Returns the root DOM node (and optionally the subtree) to the caller.
+	 * Returns the root DOM node (and optionally the subtree) to the caller. Implicitly enables the DOM domain events for the current target.
 	 *
 	 * @param ContextInterface $ctx
 	 * @param GetDocumentRequest $request
@@ -357,6 +361,16 @@ interface DOMDomainInterface
 	 * @return GetSearchResultsResponse
 	 */
 	public function getSearchResults(ContextInterface $ctx, GetSearchResultsRequest $request): GetSearchResultsResponse;
+
+
+	/**
+	 * Returns NodeIds of current top layer elements. Top layer is rendered closest to the user within a viewport, therefore its elements always appear on top of all other content.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return GetTopLayerElementsResponse
+	 */
+	public function getTopLayerElements(ContextInterface $ctx): GetTopLayerElementsResponse;
 
 
 	/**
@@ -979,4 +993,28 @@ interface DOMDomainInterface
 	 * @return ShadowRootPushedEvent
 	 */
 	public function awaitShadowRootPushed(ContextInterface $ctx): ShadowRootPushedEvent;
+
+
+	/**
+	 * Called when top layer elements are changed.
+	 *
+	 * Listener will be called whenever event DOM.topLayerElementsUpdated is fired.
+	 *
+	 * @param callable $listener
+	 *
+	 * @return SubscriptionInterface
+	 */
+	public function addTopLayerElementsUpdatedListener(callable $listener): SubscriptionInterface;
+
+
+	/**
+	 * Called when top layer elements are changed.
+	 *
+	 * Method will block until first DOM.topLayerElementsUpdated event is fired.
+	 *
+	 * @param ContextInterface $ctx
+	 *
+	 * @return TopLayerElementsUpdatedEvent
+	 */
+	public function awaitTopLayerElementsUpdated(ContextInterface $ctx): TopLayerElementsUpdatedEvent;
 }

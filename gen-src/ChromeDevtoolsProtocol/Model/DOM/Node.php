@@ -145,6 +145,13 @@ final class Node implements \JsonSerializable
 	public $pseudoType;
 
 	/**
+	 * Pseudo element identifier for this node. Only present if there is a valid pseudoType.
+	 *
+	 * @var string|null
+	 */
+	public $pseudoIdentifier;
+
+	/**
 	 * Shadow root type.
 	 *
 	 * @var string
@@ -210,7 +217,14 @@ final class Node implements \JsonSerializable
 	/** @var string */
 	public $compatibilityMode;
 
+	/** @var BackendNode|null */
+	public $assignedSlot;
 
+
+	/**
+	 * @param object $data
+	 * @return static
+	 */
 	public static function fromJson($data)
 	{
 		$instance = new static();
@@ -277,6 +291,9 @@ final class Node implements \JsonSerializable
 		if (isset($data->pseudoType)) {
 			$instance->pseudoType = (string)$data->pseudoType;
 		}
+		if (isset($data->pseudoIdentifier)) {
+			$instance->pseudoIdentifier = (string)$data->pseudoIdentifier;
+		}
 		if (isset($data->shadowRootType)) {
 			$instance->shadowRootType = (string)$data->shadowRootType;
 		}
@@ -315,6 +332,9 @@ final class Node implements \JsonSerializable
 		}
 		if (isset($data->compatibilityMode)) {
 			$instance->compatibilityMode = (string)$data->compatibilityMode;
+		}
+		if (isset($data->assignedSlot)) {
+			$instance->assignedSlot = BackendNode::fromJson($data->assignedSlot);
 		}
 		return $instance;
 	}
@@ -386,6 +406,9 @@ final class Node implements \JsonSerializable
 		if ($this->pseudoType !== null) {
 			$data->pseudoType = $this->pseudoType;
 		}
+		if ($this->pseudoIdentifier !== null) {
+			$data->pseudoIdentifier = $this->pseudoIdentifier;
+		}
 		if ($this->shadowRootType !== null) {
 			$data->shadowRootType = $this->shadowRootType;
 		}
@@ -424,6 +447,9 @@ final class Node implements \JsonSerializable
 		}
 		if ($this->compatibilityMode !== null) {
 			$data->compatibilityMode = $this->compatibilityMode;
+		}
+		if ($this->assignedSlot !== null) {
+			$data->assignedSlot = $this->assignedSlot->jsonSerialize();
 		}
 		return $data;
 	}

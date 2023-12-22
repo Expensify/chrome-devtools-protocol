@@ -31,6 +31,9 @@ final class Headers implements \JsonSerializable, \IteratorAggregate
 	}
 
 
+	/**
+	 * @param object $rawData
+	 */
 	public static function fromJson($rawData)
 	{
 		return new static($rawData);

@@ -32,6 +32,8 @@ use ChromeDevtoolsProtocol\Model\Page\FrameScheduledNavigationEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameStartedLoadingEvent;
 use ChromeDevtoolsProtocol\Model\Page\FrameStoppedLoadingEvent;
 use ChromeDevtoolsProtocol\Model\Page\GenerateTestReportRequest;
+use ChromeDevtoolsProtocol\Model\Page\GetAdScriptIdRequest;
+use ChromeDevtoolsProtocol\Model\Page\GetAdScriptIdResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetAppIdResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetAppManifestResponse;
 use ChromeDevtoolsProtocol\Model\Page\GetCookiesResponse;
@@ -80,6 +82,8 @@ use ChromeDevtoolsProtocol\Model\Page\SetFontSizesRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetGeolocationOverrideRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetInterceptFileChooserDialogRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetLifecycleEventsEnabledRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetRPHRegistrationModeRequest;
+use ChromeDevtoolsProtocol\Model\Page\SetSPCTransactionModeRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetTouchEmulationEnabledRequest;
 use ChromeDevtoolsProtocol\Model\Page\SetWebLifecycleStateRequest;
 use ChromeDevtoolsProtocol\Model\Page\StartScreencastRequest;
@@ -283,6 +287,17 @@ interface PageDomainInterface
 
 
 	/**
+	 * Call Page.getAdScriptId command.
+	 *
+	 * @param ContextInterface $ctx
+	 * @param GetAdScriptIdRequest $request
+	 *
+	 * @return GetAdScriptIdResponse
+	 */
+	public function getAdScriptId(ContextInterface $ctx, GetAdScriptIdRequest $request): GetAdScriptIdResponse;
+
+
+	/**
 	 * Returns the unique (PWA) app id. Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
 	 *
 	 * @param ContextInterface $ctx
@@ -303,7 +318,7 @@ interface PageDomainInterface
 
 
 	/**
-	 * Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the `cookies` field.
+	 * Returns all browser cookies for the page and all of its subframes. Depending on the backend support, will return detailed cookie information in the `cookies` field.
 	 *
 	 * @param ContextInterface $ctx
 	 *
@@ -343,7 +358,7 @@ interface PageDomainInterface
 
 
 	/**
-	 * Call Page.getManifestIcons command.
+	 * Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation.
 	 *
 	 * @param ContextInterface $ctx
 	 *
@@ -656,6 +671,28 @@ interface PageDomainInterface
 	 * @return void
 	 */
 	public function setLifecycleEventsEnabled(ContextInterface $ctx, SetLifecycleEventsEnabledRequest $request): void;
+
+
+	/**
+	 * Extensions for Custom Handlers API: https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetRPHRegistrationModeRequest $request
+	 *
+	 * @return void
+	 */
+	public function setRPHRegistrationMode(ContextInterface $ctx, SetRPHRegistrationModeRequest $request): void;
+
+
+	/**
+	 * Sets the Secure Payment Confirmation transaction mode. https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
+	 *
+	 * @param ContextInterface $ctx
+	 * @param SetSPCTransactionModeRequest $request
+	 *
+	 * @return void
+	 */
+	public function setSPCTransactionMode(ContextInterface $ctx, SetSPCTransactionModeRequest $request): void;
 
 
 	/**

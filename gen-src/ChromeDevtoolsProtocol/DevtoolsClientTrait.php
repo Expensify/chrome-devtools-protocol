@@ -32,10 +32,16 @@ use ChromeDevtoolsProtocol\Domain\DatabaseDomain;
 use ChromeDevtoolsProtocol\Domain\DatabaseDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DebuggerDomain;
 use ChromeDevtoolsProtocol\Domain\DebuggerDomainInterface;
+use ChromeDevtoolsProtocol\Domain\DeviceAccessDomain;
+use ChromeDevtoolsProtocol\Domain\DeviceAccessDomainInterface;
 use ChromeDevtoolsProtocol\Domain\DeviceOrientationDomain;
 use ChromeDevtoolsProtocol\Domain\DeviceOrientationDomainInterface;
 use ChromeDevtoolsProtocol\Domain\EmulationDomain;
 use ChromeDevtoolsProtocol\Domain\EmulationDomainInterface;
+use ChromeDevtoolsProtocol\Domain\EventBreakpointsDomain;
+use ChromeDevtoolsProtocol\Domain\EventBreakpointsDomainInterface;
+use ChromeDevtoolsProtocol\Domain\FedCmDomain;
+use ChromeDevtoolsProtocol\Domain\FedCmDomainInterface;
 use ChromeDevtoolsProtocol\Domain\FetchDomain;
 use ChromeDevtoolsProtocol\Domain\FetchDomainInterface;
 use ChromeDevtoolsProtocol\Domain\HeadlessExperimentalDomain;
@@ -68,6 +74,8 @@ use ChromeDevtoolsProtocol\Domain\PerformanceDomain;
 use ChromeDevtoolsProtocol\Domain\PerformanceDomainInterface;
 use ChromeDevtoolsProtocol\Domain\PerformanceTimelineDomain;
 use ChromeDevtoolsProtocol\Domain\PerformanceTimelineDomainInterface;
+use ChromeDevtoolsProtocol\Domain\PreloadDomain;
+use ChromeDevtoolsProtocol\Domain\PreloadDomainInterface;
 use ChromeDevtoolsProtocol\Domain\ProfilerDomain;
 use ChromeDevtoolsProtocol\Domain\ProfilerDomainInterface;
 use ChromeDevtoolsProtocol\Domain\RuntimeDomain;
@@ -231,6 +239,18 @@ trait DevtoolsClientTrait
 	}
 
 
+	public function deviceAccess(): DeviceAccessDomainInterface
+	{
+		if (!isset($this->domains['DeviceAccess'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['DeviceAccess'] = new DeviceAccessDomain($this);
+		}
+		/** @var DeviceAccessDomainInterface $domain */
+		$domain = $this->domains['DeviceAccess'];
+		return $domain;
+	}
+
+
 	public function deviceOrientation(): DeviceOrientationDomainInterface
 	{
 		if (!isset($this->domains['DeviceOrientation'])) {
@@ -299,6 +319,30 @@ trait DevtoolsClientTrait
 		}
 		/** @var EmulationDomainInterface $domain */
 		$domain = $this->domains['Emulation'];
+		return $domain;
+	}
+
+
+	public function eventBreakpoints(): EventBreakpointsDomainInterface
+	{
+		if (!isset($this->domains['EventBreakpoints'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['EventBreakpoints'] = new EventBreakpointsDomain($this);
+		}
+		/** @var EventBreakpointsDomainInterface $domain */
+		$domain = $this->domains['EventBreakpoints'];
+		return $domain;
+	}
+
+
+	public function fedCm(): FedCmDomainInterface
+	{
+		if (!isset($this->domains['FedCm'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['FedCm'] = new FedCmDomain($this);
+		}
+		/** @var FedCmDomainInterface $domain */
+		$domain = $this->domains['FedCm'];
 		return $domain;
 	}
 
@@ -491,6 +535,18 @@ trait DevtoolsClientTrait
 		}
 		/** @var PerformanceTimelineDomainInterface $domain */
 		$domain = $this->domains['PerformanceTimeline'];
+		return $domain;
+	}
+
+
+	public function preload(): PreloadDomainInterface
+	{
+		if (!isset($this->domains['Preload'])) {
+			/** @var InternalClientInterface $this */
+			$this->domains['Preload'] = new PreloadDomain($this);
+		}
+		/** @var PreloadDomainInterface $domain */
+		$domain = $this->domains['Preload'];
 		return $domain;
 	}
 
