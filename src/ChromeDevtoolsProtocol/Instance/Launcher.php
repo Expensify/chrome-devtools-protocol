@@ -228,6 +228,8 @@ class Launcher
 
 			if ($this->port === 0) {
 				$process->waitUntil(function ($type, $buffer)  {
+					openlog('chrome-devtools-protocol', LOG_PID | LOG_PERROR, LOG_USER);
+					syslog(LOG_INFO, 'COLE: ' . substr($buffer, 0, 1000)); // Limit buffer size in log
 					if (preg_match('~DevTools listening on ws://.+:(\d+)/devtools~', $buffer, $m)) {
 						$this->port = (int)$m[1];
 						return true;
