@@ -1,7 +1,10 @@
 <?php
 namespace ChromeDevtoolsProtocol;
 
+use ChromeDevtoolsProtocol\Domain\TargetDomainInterface;
+use ChromeDevtoolsProtocol\Exception\DeadlineException;
 use ChromeDevtoolsProtocol\Exception\ErrorException;
+use ChromeDevtoolsProtocol\Exception\RuntimeException;
 use ChromeDevtoolsProtocol\Instance\Launcher;
 use ChromeDevtoolsProtocol\Model\Network\GetCookiesRequest;
 use ChromeDevtoolsProtocol\Model\Page\NavigateRequest;
@@ -94,6 +97,37 @@ class SessionTest extends TestCase
 		} finally {
 			$instance->close();
 		}
+	}
+
+	public function testCloseReleasesWebSocketWhenCleanupThrows()
+	{
+		$target = $this->createMock(TargetDomainInterface::class);
+		$target->method('closeTarget')->willThrowException(new DeadlineException("Socket closed."));
+
+		$browser = $this->createMock(DevtoolsClientInterface::class);
+		$browser->method('target')->willReturn($target);
+		$browser->expects($this->once())->method('close');
+
+		$session = new Session($browser, "browserContextId", "targetId", "sessionId");
+
+		$this->expectException(DeadlineException::class);
+		$session->close();
+	}
+
+	public function testCloseSurfacesCleanupErrorEvenIfReleaseThrows()
+	{
+		$target = $this->createMock(TargetDomainInterface::class);
+		$target->method('closeTarget')->willThrowException(new DeadlineException("Socket closed."));
+
+		$browser = $this->createMock(DevtoolsClientInterface::class);
+		$browser->method('target')->willReturn($target);
+		$browser->expects($this->once())->method('close')
+			->willThrowException(new RuntimeException("disconnect failed"));
+
+		$session = new Session($browser, "browserContextId", "targetId", "sessionId");
+
+		$this->expectException(DeadlineException::class);
+		$session->close();
 	}
 
 }
