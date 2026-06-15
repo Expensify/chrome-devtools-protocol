@@ -68,7 +68,11 @@ class Session implements DevtoolsClientInterface, InternalClientInterface
 					->build()
 			);
 		} finally {
-			$this->browser->close();
+			// Swallow close() errors so the original cleanup failure surfaces; the socket is already released before close() can throw.
+			try {
+				$this->browser->close();
+			} catch (\Throwable $e) {
+			}
 		}
 	}
 
