@@ -53,19 +53,27 @@ class Session implements DevtoolsClientInterface, InternalClientInterface
 	public function close(): void
 	{
 		$ctx = Context::withTimeout(Context::background(), 10);
-		$this->browser->target()->closeTarget(
-			$ctx,
-			CloseTargetRequest::builder()
-				->setTargetId($this->targetId)
-				->build()
-		);
-		$this->browser->target()->disposeBrowserContext(
-			$ctx,
-			DisposeBrowserContextRequest::builder()
-				->setBrowserContextId($this->browserContextId)
-				->build()
-		);
-		$this->browser->close();
+		// Release the WebSocket even if these cleanup commands throw (e.g. Chrome already gone), otherwise the client leaks until __destruct() throws.
+		try {
+			$this->browser->target()->closeTarget(
+				$ctx,
+				CloseTargetRequest::builder()
+					->setTargetId($this->targetId)
+					->build()
+			);
+			$this->browser->target()->disposeBrowserContext(
+				$ctx,
+				DisposeBrowserContextRequest::builder()
+					->setBrowserContextId($this->browserContextId)
+					->build()
+			);
+		} finally {
+			// Swallow close() errors so the original cleanup failure surfaces; the socket is already released before close() can throw.
+			try {
+				$this->browser->close();
+			} catch (\Throwable $e) {
+			}
+		}
 	}
 
 	/**
